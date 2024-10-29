@@ -34,90 +34,92 @@
         </el-form-item>
       </el-form>
     </el-card>
-    <el-table
-      style="margin-top: 20px"
-      :data="moviesList"
-      v-loading="loading"
-      border
-      highlight-current-row
-    >
-      <el-table-column :width="70" align="center" label="ID" prop="id"></el-table-column>
-      <el-table-column label="状态" prop="status">
-        <template #default="{ row }">
-          <el-switch :model-value="row.status === 1" @change="onStatusChanged(row)"></el-switch>
-        </template>
-      </el-table-column>
-      <el-table-column :width="70" align="center" label="名称" prop="name"></el-table-column>
-      <el-table-column
-        :width="180"
-        show-overflow-tooltip
-        align="center"
-        label="Host"
-        prop="host"
-      ></el-table-column>
-      <el-table-column
-        :width="220"
-        show-overflow-tooltip
-        align="center"
-        label="搜索地址"
-        prop="searchUrl"
-      ></el-table-column>
-      <el-table-column
-        :width="220"
-        show-overflow-tooltip
-        align="center"
-        label="分类地址"
-        prop="classifyUrl"
-      ></el-table-column>
-      <el-table-column
-        :width="220"
-        show-overflow-tooltip
-        align="center"
-        label="详情地址"
-        prop="detailUrl"
-      ></el-table-column>
-      <el-table-column
-        :width="220"
-        show-overflow-tooltip
-        align="center"
-        label="播放地址"
-        prop="videoUrl"
-      ></el-table-column>
-      <el-table-column
-        :width="220"
-        show-overflow-tooltip
-        label="验证地址"
-        prop="verifyUrl"
-      ></el-table-column>
-      <el-table-column label="描述" prop="desc"></el-table-column>
-      <el-table-column align="center" label="解析ID" prop="parseId"></el-table-column>
-      <el-table-column align="center" fixed="right" :min-width="200" label="操作">
-        <template #default="{ row }">
-          <el-button type="info" size="small" @click="editMovie(row)">编辑</el-button>
-          <el-popconfirm
-            :title="`确认要删除${row.name}嘛`"
-            confirm-button-text="删除"
-            cancel-button-text="取消"
-            @confirm="deleteMovie(row.id)"
-          >
-            <template #reference>
-              <el-button size="small" type="danger">删除</el-button>
-            </template>
-          </el-popconfirm>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      style="margin-top: 20px"
-      v-model:current-page="queryParams.pageNo"
-      v-model:page-size="queryParams.pageSize"
-      :page-sizes="[10, 20, 30, 40]"
-      background
-      layout="->, total, sizes, prev, pager, next, jumper"
-      :total
-      @current-change="getMovieList"
-      @size-change="getMovieList"
-    />
+    <el-card style="margin-top: 20px">
+      <el-table
+        style="margin-top: 20px"
+        :data="moviesList"
+        v-loading="loading"
+        border
+        highlight-current-row
+      >
+        <el-table-column :width="70" align="center" label="ID" prop="id"></el-table-column>
+        <el-table-column label="状态" prop="status">
+          <template #default="{ row }">
+            <el-switch :model-value="row.status === 1" @change="onStatusChanged(row)"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column :width="70" align="center" label="名称" prop="name"></el-table-column>
+        <el-table-column
+          :width="180"
+          show-overflow-tooltip
+          align="center"
+          label="Host"
+          prop="host"
+        ></el-table-column>
+        <el-table-column
+          :width="220"
+          show-overflow-tooltip
+          align="center"
+          label="搜索地址"
+          prop="searchUrl"
+        ></el-table-column>
+        <el-table-column
+          :width="220"
+          show-overflow-tooltip
+          align="center"
+          label="分类地址"
+          prop="classifyUrl"
+        ></el-table-column>
+        <el-table-column
+          :width="220"
+          show-overflow-tooltip
+          align="center"
+          label="详情地址"
+          prop="detailUrl"
+        ></el-table-column>
+        <el-table-column
+          :width="220"
+          show-overflow-tooltip
+          align="center"
+          label="播放地址"
+          prop="videoUrl"
+        ></el-table-column>
+        <el-table-column
+          :width="220"
+          show-overflow-tooltip
+          label="验证地址"
+          prop="verifyUrl"
+        ></el-table-column>
+        <el-table-column label="描述" prop="desc"></el-table-column>
+        <el-table-column align="center" label="解析ID" prop="parseId"></el-table-column>
+        <el-table-column align="center" fixed="right" :min-width="200" label="操作">
+          <template #default="{ row }">
+            <el-button type="info" size="small" @click="editMovie(row)">编辑</el-button>
+            <el-popconfirm
+              :title="`确认要删除${row.name}嘛`"
+              confirm-button-text="删除"
+              cancel-button-text="取消"
+              @confirm="deleteMovie(row.id)"
+            >
+              <template #reference>
+                <el-button size="small" type="danger">删除</el-button>
+              </template>
+            </el-popconfirm>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        style="margin-top: 20px"
+        v-model:current-page="queryParams.pageNo"
+        v-model:page-size="queryParams.pageSize"
+        :page-sizes="[10, 20, 30, 40]"
+        background
+        layout="->, total, sizes, prev, pager, next, jumper"
+        :total
+        @current-change="getMovieList"
+        @size-change="getMovieList"
+      />
+    </el-card>
     <div style="height: 20px"></div>
     <el-dialog v-model="showDialog" width="600">
       <template #header>

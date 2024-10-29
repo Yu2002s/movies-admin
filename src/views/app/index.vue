@@ -85,7 +85,9 @@ const deleteUpdate = async (id) => {
 <template>
   <div class="app-update-container">
     <el-card style="margin-top: 20px">
-      <el-button type="primary" v-loading="loading" @click="addUpdate">添加版本</el-button>
+      <template #header>
+        <el-button type="primary" v-loading="loading" @click="addUpdate">添加版本</el-button>
+      </template>
       <el-table :data="updateList" v-loading="loading">
         <el-table-column width="60" align="center" label="ID" prop="id"></el-table-column>
         <el-table-column

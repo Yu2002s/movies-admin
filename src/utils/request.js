@@ -24,6 +24,9 @@ request.interceptors.response.use(
     let msg
     const status = error.response.status
     switch (status) {
+      case 400:
+        msg = error.response.msg
+        break
       case 401:
         useUserStore().logout()
         msg = '登录过期'

@@ -63,6 +63,9 @@ export default defineConfig(function ({ mode }) {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
+    build: {
+      outDir: "D:\\java-project\\Movies\\src\\main\\resources\\static",
+    },
     server: {
       proxy: {
         [env.VITE_HTTP_BASE_URL]: {

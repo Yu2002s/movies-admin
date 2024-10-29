@@ -1,6 +1,6 @@
 <template>
   <div class="user-list">
-    <el-card>
+    <el-card style="margin-top: 20px">
       <el-form inline class="form" @submit.prevent="getUserList">
         <el-form-item label="昵称" prop="nickname">
           <el-input v-model="queryParams.nickname" placeholder="请输入昵称" clearable></el-input>
@@ -107,6 +107,7 @@ const reset = () => {
 
 <style lang="less" scoped>
 .user-list {
+  padding: 0 20px;
   height: 100%;
 
   ::v-deep(.el-form-item) {
