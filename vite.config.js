@@ -64,7 +64,7 @@ export default defineConfig(function ({ mode }) {
       }
     },
     build: {
-      outDir: "D:\\java-project\\Movies\\src\\main\\resources\\static",
+      // outDir: "D:\\java-project\\Movies\\src\\main\\resources\\static",
     },
     server: {
       proxy: {

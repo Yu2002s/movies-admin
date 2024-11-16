@@ -31,17 +31,12 @@
           <el-button type="info" @click="resetSearch">重置</el-button>
           <el-button type="primary" native-type="submit">搜索</el-button>
           <el-button type="primary" @click="addMovie">新增</el-button>
+          <el-button type="warning" @click="addMovieFast">一键添加</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <el-card style="margin-top: 20px">
-      <el-table
-        style="margin-top: 20px"
-        :data="moviesList"
-        v-loading="loading"
-        border
-        highlight-current-row
-      >
+      <el-table :data="moviesList" v-loading="loading" highlight-current-row>
         <el-table-column :width="70" align="center" label="ID" prop="id"></el-table-column>
         <el-table-column label="状态" prop="status">
           <template #default="{ row }">
@@ -90,8 +85,9 @@
           label="验证地址"
           prop="verifyUrl"
         ></el-table-column>
-        <el-table-column label="描述" prop="desc"></el-table-column>
+        <el-table-column width="120" align="center" label="描述" prop="desc"></el-table-column>
         <el-table-column align="center" label="解析ID" prop="parseId"></el-table-column>
+        <el-table-column align="center" label="排序" prop="cateOrder"></el-table-column>
         <el-table-column align="center" fixed="right" :min-width="200" label="操作">
           <template #default="{ row }">
             <el-button type="info" size="small" @click="editMovie(row)">编辑</el-button>
@@ -151,47 +147,69 @@
           <el-input placeholder="请输入描述" v-model="currentMovie.desc"></el-input>
         </el-form-item>
         <el-form-item label="配置">
+          <span style="margin-right: 20px">解析ID</span>
           <el-input
             type="number"
-            style="width: 300px"
+            style="width: 120px"
             placeholder="请输入解析id"
             v-model="currentMovie.parseId"
           ></el-input>
-          <span style="margin-left: 20px">状态</span>
+          <span style="margin: 0 20px">排序</span>
+          <el-input
+            style="width: 120px"
+            type="number"
+            placeholder="请输入排序"
+            v-model="currentMovie.cateOrder"
+          ></el-input>
+          <span style="margin: 0 20px">状态</span>
           <el-switch
             :model-value="currentMovie.status === 1"
-            @change="(val) => (currentMovie.status = val ? 1 : 0)"
+            @change="(val: boolean) => (currentMovie.status = val ? 1 : 0)"
           ></el-switch>
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="showDialog = false">取消</el-button>
         <el-button type="primary" @click="addOrUpdateMovie(currentMovie)">保存</el-button>
+        <el-button v-show="!isAddMovie" type="warning" @click="cloneMovie">克隆</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { reqDeleteMovie, reqGetMoviesList, reqUpdateMovie } from '@/api/movie/index.js'
 import { ElMessage } from 'element-plus'
-
+import { Movie, QueryParams } from '@/api/movie/type'
 defineOptions({
   name: 'MovieList'
 })
 
-const queryParams = reactive({
+const queryParams = reactive<QueryParams>({
   pageNo: 1,
-  pageSize: 15,
+  pageSize: 10,
   name: '',
-  status: '1',
+  status: '',
   parseId: ''
 })
 const total = ref(0)
 
 const loading = ref(false)
-const moviesList = ref([])
-const currentMovie = ref({})
+const moviesList = ref<Movie[]>([])
+const currentMovie = ref<Movie>({
+  id: undefined,
+  name: '',
+  status: 0,
+  host: '',
+  classifyUrl: '',
+  searchUrl: '',
+  detailUrl: '',
+  videoUrl: '',
+  verifyUrl: '',
+  desc: '',
+  parseId: 0,
+  cateOrder: 0
+})
 const isAddMovie = computed(() => {
   return !currentMovie.value.id
 })
@@ -226,18 +244,18 @@ const resetSearch = () => {
     pageNo: 1,
     pageSize: 15,
     name: '',
-    status: '1',
+    status: '',
     parseId: ''
   })
   onSubmit()
 }
 
-const onStatusChanged = (movie) => {
+const onStatusChanged = (movie: Movie) => {
   movie.status = movie.status === 1 ? 0 : 1
   addOrUpdateMovie(movie)
 }
 
-const addOrUpdateMovie = async (movie) => {
+const addOrUpdateMovie = async (movie: Movie) => {
   const res = await reqUpdateMovie(movie)
   if (res.code === 200) {
     ElMessage.success({
@@ -254,17 +272,52 @@ const addOrUpdateMovie = async (movie) => {
 
 const addMovie = () => {
   currentMovie.value = {
+    id: undefined,
+    name: '',
     status: 0,
+    host: '',
+    classifyUrl: '',
+    searchUrl: '',
+    detailUrl: '',
+    videoUrl: '',
+    verifyUrl: '',
+    desc: '',
+    parseId: 0,
+    cateOrder: 0
   }
   showDialog.value = true
 }
 
-const editMovie = (movie) => {
+const cloneMovie = () => {
+  currentMovie.value.id = undefined
+  addOrUpdateMovie(currentMovie.value)
+}
+
+const addMovieFast = () => {
+  currentMovie.value = {
+    id: undefined,
+    name: '',
+    status: 0,
+    host: '',
+    classifyUrl:
+      '/vod/show.html?id={cateId}&class={type}&area={area}&lang={language}&year={year}&letter={letter}&by={sort}',
+    searchUrl: '/vod/search.html?wd={name}&page={page}',
+    detailUrl: '/vod/detail/id/{detailId}.html',
+    videoUrl: '/vod/play/id/{detailId}/sid/{sourceId}/nid/{selectionId}.html',
+    verifyUrl: '',
+    desc: '',
+    parseId: 0,
+    cateOrder: 0
+  }
+  showDialog.value = true
+}
+
+const editMovie = (movie: Movie) => {
   Object.assign(currentMovie.value, movie)
   showDialog.value = true
 }
 
-const deleteMovie = async (id) => {
+const deleteMovie = async (id: number) => {
   const res = await reqDeleteMovie(id)
   if (res.code === 200) {
     ElMessage.success({
@@ -286,6 +339,10 @@ const deleteMovie = async (id) => {
 
   .el-card ::v-deep(.el-form-item) {
     margin-bottom: 0;
+  }
+
+  :deep(.el-table-fixed-column--right.is-first-column::before) {
+    bottom: 0px;
   }
 }
 </style>
