@@ -164,7 +164,7 @@
           <span style="margin: 0 20px">状态</span>
           <el-switch
             :model-value="currentMovie.status === 1"
-            @change="(val: boolean) => (currentMovie.status = val ? 1 : 0)"
+            @change="(val: boolean | string | number) => (currentMovie.status = val ? 1 : 0)"
           ></el-switch>
         </el-form-item>
       </el-form>
@@ -181,6 +181,7 @@
 import { reqDeleteMovie, reqGetMoviesList, reqUpdateMovie } from '@/api/movie/index.js'
 import { ElMessage } from 'element-plus'
 import { Movie, QueryParams } from '@/api/movie/type'
+
 defineOptions({
   name: 'MovieList'
 })
@@ -342,7 +343,7 @@ const deleteMovie = async (id: number) => {
   }
 
   :deep(.el-table-fixed-column--right.is-first-column::before) {
-    bottom: 0px;
+    bottom: 0;
   }
 }
 </style>
